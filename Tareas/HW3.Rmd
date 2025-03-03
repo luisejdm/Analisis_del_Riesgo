@@ -1,0 +1,171 @@
+---
+title: "***HW 3: Stylized Asset Return Facts***"
+author: "Luis Eduardo Jiménez del Muro"
+date: "2025-02-11"
+output: html_document
+---
+
+```{r}
+library(quantmod)
+```
+
+## Activos a Utilizar
+
+-   Visa (V).
+-   Starbucks (SBUX).
+-   Nike (NKE).
+
+## Visa
+
+### Hecho estilizado 1
+
+```{r}
+datos <- new.env()
+visa <- "V"
+getSymbols(visa, env=datos)
+precio <- datos[[visa]][,6]
+plot(precio, type="l", col="cadetblue", lwd=1.5, xlab="Tiempo", ylab="Precio", main="(Precio de Visa)")
+```
+
+El comportamiento de visa, a pesar de tener una tendencia a la alza, si cumple con ser una caminata aleatoria, porque así como ha subido mucho, lo ha hecho con muchas variaciones a lo largo del tiempo.
+
+### Hecho estilizado 2
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma de los rendimientos de Visa)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+```
+
+Gracias al histograma anterior, podemos confirmar que los rendimientos diarios de Visa tienen una forma de campana, con media centrada en cero.
+
+### Hecho estilizado 3
+
+```{r}
+mensuales <- to.monthly(precio)
+chartSeries(mensuales, theme="white", name="Precio de Visa")
+addBBands()
+```
+
+Se puede observar claramente como en tiempos volátiles las bandas de Bollinger se expanden, lo que indica que la volatilidad tiende a agruparse.
+
+### Hecho estilizado 4
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma del rendimiento)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+lines(xval, dnorm(xval, mean=mean(rendimiento), sd=sd(rendimiento)), col="blue", lwd=3)
+```
+
+Comparando la linea roja (nuestros rendimientos) contra la azul (distribución normal) es evidente que la distribución de los rendimientos presenta leptocurtosis, es decir, la mayoría están agrupados en el centro de la distribución y formando tambien colas pesadas.
+
+## Starbucks
+
+### Hecho estilizado 1
+
+```{r}
+datos <- new.env()
+starbucks <- "SBUX"
+getSymbols(starbucks, env=datos)
+precio <- datos[[starbucks]][,6]
+plot(precio, type="l", col="cadetblue", lwd=1.5, xlab="Tiempo", ylab="Precio", main="(Precio de Starbucks)")
+```
+
+Al igual que Visa, Starbucks presenta mucha volatilidad a lo largo del tiempo a pesar de que el precio a crecido. Esto confirma que es una caminata aleatoria.
+
+### Hecho estilizado 2
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma de los rendimientos de Starbucks)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+```
+
+El histograma de los rendimientos de starbucks se distribuye de manera normal y con media en cero.
+
+### Hecho estilizado 3
+
+```{r}
+mensuales <- to.monthly(precio)
+chartSeries(mensuales, theme="white", name="Precio de Starbucks")
+addBBands()
+```
+
+En los tiempos que más variaciones hubo en el precio tambien crecieron las bandas de Bollinger, lo que confirma que la varianza se agrupa.
+
+### Hecho estilizado 4
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma del rendimiento)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+lines(xval, dnorm(xval, mean=mean(rendimiento), sd=sd(rendimiento)), col="blue", lwd=3)
+```
+
+Nuevamente, podemos observar que los rendimientos tienden a agruparse en la media, lo que genera una leptocurtosis en la distribución. Además, se observan colas pesadas.
+
+## Nike
+
+### Hecho estilizado 1
+
+```{r}
+datos <- new.env()
+nike <- "NKE"
+getSymbols(nike, env=datos)
+precio <- datos[[nike]][,6]
+plot(precio, type="l", col="cadetblue", lwd=1.5, xlab="Tiempo", ylab="Precio", main="(Precio de Nike)")
+```
+
+El comportamiento de Nike ha tenidos subidas y bajadas. Además, presenta mayores variaciones a lo largo del tiempo que las otras 2 acciones. Esto confirma que es una caminata aleatoria.
+
+### Hecho estilizado 2
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma de los rendimientos de Nike)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+```
+
+En el histograma anterior, se puede observar la distribución acampanada de los rendimientos con media en cero.
+
+### Hecho estilizado 3
+
+```{r}
+mensuales <- to.monthly(precio)
+chartSeries(mensuales, theme="white", name="Precio de Nike")
+addBBands()
+```
+
+Gracias a la alta volatilidad de Nike, se observa claramente la agrupación de la volatilidad en las bandas de bollinger. Por ejemplo, en el pico que hubo en 2021, fue en el momento que las bandas se ampliaron más.
+
+### Hecho estilizado 4
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma del rendimiento)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+lines(xval, dnorm(xval, mean=mean(rendimiento), sd=sd(rendimiento)), col="blue", lwd=3)
+```
+
+La distribución de los rendimientos tiende a tener grandes acumulaciones en la media, lo que genera leptocurtosis. Además algo nuevo que se puede observar en este histograma, es que los rendimientos están un poco sesgados, presentando una cola izquierda mas pesada que la derecha.
+
+## Conclusiones
+
+- En el análisis realizado en este trabajo se observó que la volatilidad de los rendimientos no es constante en el tiempo, sino que tiende a agruparse en tiempos de alta y baja volatilidad. Este comportamiento pudo observarse en el hecho 3, especialmente de la acción de Starbucks, dónde se aprecia de forma muy clara las expansiones de las bandas, indicando periodos de alta volatilidad.
+
+- A pesar de que la distribución de los rendimientos tiene una forma de campana, no podemos decir que sea una normal, dado que, existen grandes agrupaciones de datos en cero (la media) lo que genera una leptocurtosis. Incluso fue posible observar sesgos, como en el caso de Nike.
+
+- Las 3 acciones presentaron comportamientos de caminatas aleatorias, lo que sugiere que se utilicen herramientas complejas para el modelado de estas acciones.
