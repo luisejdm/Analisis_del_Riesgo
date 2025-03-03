@@ -1,0 +1,122 @@
+---
+title: "Rendimiento y Riesgo"
+author: "Luis Jiménez"
+date: "2025-02-11"
+output: 
+  html_document:
+    theme: lumen
+    toc: true
+    toc_float: true
+    code_folding: show
+    number_sections: true
+---
+
+## Explicacion
+Ya sabemos que los cambios en el precio tienen un comportamiento dado por la EDE:
+
+### Ecuación
+$$ dS = S\mu dt + S\sigma dW $$
+
+Los valores de los parámetros $\mu, \sigma$ dependen del tiempo, por lo cual, debemos definir si serán diarios, serán anualizados o que características vamos a considerar.
+
+```{r}
+library(quantmod)
+library(lubridate)
+
+
+ticker <- "GFNORTEO.MX"
+datos <- new.env()
+getSymbols(ticker, from="2000-01-02", to=today(), env=datos)
+
+precio <- datos[[ticker]][,6]
+plot(precio)
+```
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+plot(rendimiento)
+```
+
+Decíamos que los parámetros dependen del tiempo. Primero consideraremos los datos históricos, es decir todos los datos que existen:
+
+```{r}
+mu_di_his <- mean(rendimiento)
+sigma_di_hist <- sd(rendimiento)
+mu_di_his
+sigma_di_hist
+```
+
+Estos parámetros podemos anualizarlos para que tengan una mejor interprestación:
+
+```{r}
+mu_anual_hist <- mu_di_his * 252
+sigma_anual_hist <- sigma_di_hist * 252^(1/2)
+mu_anual_hist
+sigma_anual_hist
+```
+
+Vamos a clauclar estos mismos parámetros para cada uno de los años de información que tenemos
+
+```{r}
+library(dplyr)
+
+names(rendimiento) <- "rend"
+tabla <- rendimiento |> 
+  as_tibble() |> 
+  mutate(year=year(rendimiento)) |> 
+  group_by(year) |> 
+  summarise("Ren_Diario"=mean(rend),
+            "Vol_Diaria"=sd(rend),
+            "Ren_Anual"=mean(rend)*252,
+            "Vol_Anual"=sd(rend)*sqrt(252))
+
+tabla
+```
+
+Hasta ahora hmos ocnsiderado que los rendimientos tienen el supuesto de normalidad (esto sucede porque los rendimientos se explica por un proceso estocastico, que está determinado por un $\epsilon$ que tiene media cero y varianza 1)
+
+```{r}
+hist(rendimiento, n=100, col="red")
+```
+
+Vamos a efectuar un prueba formal de NORMALIDAD. Una pruebe formal nos indica si estrictamente la variable sigue o no el comportamiento deseado. En este caso, la prueba que usaremos se llama Jarque-Bera y consiste en una prueba de hipótesis, con una nula y otra alternativa y usamos el valore del P-Value para decidir.
+
+(NORA: PARA MI PROTECTO TERCERA ENTREGA SERÁ NECESARIO QUE HAGA UNA PRUEBA DE NORMALIDAD, ENTONCES DEBO INVERSTIGAR QUE ES LA PRUEBA, QUE CARACTERÍSTICA TIENE Y TUDA LA INFORMACIÓN RELEVANTE).
+
+- $H_0$: Hay normalidad en los datos. 
+- $H_a$: No hay normalidad.
+
+```{r}
+library(moments)
+jarque.test(as.numeric(rendimiento))
+```
+
+El P-Value es la probabilidad de cometer el error de tipo I.
+
+-   Error de tipo I (rechazar $H_0$ cuando es verdadera).
+
+Interpretación: Prácticamente hay 0% de probabilidades de rechazar $H_0$ cuando es verdadera, por lo que aceptamos la hipótesis alternativa.
+
+Conclusión: los datos del rendimiento no son normalos dado que tienen leptocurtosis, es decir un excesos de curtosis respecto a lo que es normal.
+
+La prueba que acabamos de hacer compara la distribución de los datos que le damos con los de una normal. La normal tiene dos características, sesgo cero y custorsis 3.
+
+```{r}
+skewness(rendimiento)
+kurtosis(rendimiento)
+```
+
+
+```{r}
+jarque.test(as.numeric(precio))
+```
+Ahora hagamos la prueba de rendimiento diario promedio igual a cer.
+
+- $H_0$: La media del rendimiento diario es cero.
+- $H_a$: NoLa media del rendimiento diario es diferente de cero.
+
+```{r}
+t.test(as.numeric(rendimiento), mu=0, alternative="two.sided")
+```
+
+

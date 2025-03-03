@@ -1,0 +1,128 @@
+---
+title: "Hechos estilizados"
+author: "Luis Jiménez"
+date: "2025-02-04"
+output: html_document
+--- |> |> = = = = 
+--- = = = = = = 
+--- = = = = = = = = 
+---
+
+# ¿Qué es un hecho estilizado?
+
+A partir de información histórica y hechos, se identifican patrones y asumimos comportamientos. Los hechos estilizados referentes al comportamiento de l precio y del rendimiento de un actibo que cotiza en una bolsa de valores, son los siguientes:
+
+## Hecho estilizado 1
+
+Los precios de los activos y el valor de los portafolios siguen una caminata aleatoria.
+
+Para verificar estte hecho primero vamos a graficar una caminatra aleatoria. Ya sabemos que matemáticamente una caminata aleatoria, tiene este comportamiento:
+
+$$
+S_t = S_{t-1} + \epsilon
+$$
+
+Donde $\epsilon$, tiene un comportamiento normal con media cero y varianza 1. Es decir:
+
+$$
+E[\epsilon]=0,\ \ \ \ \ \ \ \ \ \ \sigma[\epsilon]=1
+$$
+
+El comportamiento de $\epsilon$ tambien cumple con lo siguientes:
+
+$$
+Cov[\epsilon_i, \epsilon_j] = 0
+$$
+
+Esto tiene implicaciones importantes:
+
+-   No hay correlación entre los rendimientos de un precio con el de otro. Es decir, hay falta de memoria.
+-   Determina la formación eficiente de los precios
+
+```{r}
+n <- 1000
+S0 <- 25
+epsilon <- rnorm(n, 0, 1)
+St <- S0 + cumsum(epsilon)
+plot(St, type="l", col="blue", lwd=2, xlab="Tiempo", ylab="Precio", main="(Caminata aleatoria)")
+```
+
+Vamos a comparar este comportamiento con el del precio de un activo.
+
+```{r}
+library(quantmod)
+
+datos <- new.env()
+ticker <- "GFNORTEO.MX"
+getSymbols(ticker, env=datos)
+precio <- datos[[ticker]][,6]
+plot(precio, type="l", col="cadetblue", lwd=3, xlab="Tiempo", ylab="Precio", main="(Precio del activo)")
+```
+
+El comportamiento observado corresponde a un comportamiento de caminata aleatoria, ya que no hauna tendencia clara en el sobre lo que pueda suceder y la variable (precio) fluctua de manera libre en el tiempo.
+
+## Hecho estilizado 2
+
+La distribución del rendimiento del precio tiene una forma aproximadamente "acampanada".
+
+Una característica del comportamiento del rendimiento es que cuando hacemos su histograma para ver su distribución se observa una especie de campana en ciertas deformaciones.
+
+-   Recuerda que el comportamiento de campana hacer referencia a la distribución normal.
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma del rendimiento)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+lines(xval, dnorm(xval, mean=mean(rendimiento), sd=sd(rendimiento)), col="blue", lwd=3)
+```
+
+```{r}
+plot(rendimiento, type="l", col="cadetblue", lwd=2, xlab="Tiempo", ylab="Rendimiento", main="(Rendimiento del activo)")
+```
+
+Veamos que pasa con el precio:
+
+```{r}
+hist(precio, n=100,col="cadetblue", main="(Histograma del precio)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(precio), col="red", lwd=3)
+xval <- seq(min(precio), max(precio), length.out=100)
+lines(xval, dnorm(xval, mean=mean(precio), sd=sd(precio)), col="blue", lwd=3)
+```
+
+## Hecho estilizado 3
+
+Los rendimientos de los activos presentan volatilidad no constantey agrupada.
+
+```{r}
+mensuales <- to.monthly(precio)
+chartSeries(mensuales, theme="white", name="Precio")
+addBBands()
+```
+
+En un mercado volatil las bandas de Bollinger se expanden, mientras que en un mercado menos volatil las bandas se estrechan. Esto nos dice que la volitilidad no es constante y tiende a agruparse.
+
+## Hecho estilizado 4
+
+La distribución de los rendimientos presenta leptocurtosis.
+
+Este hecho nos dice que los rendimientos tienen un exceso de datos alrededor de la media (en exceso comparado con la distribución normal), además los rendimientos tienen colas son pesadas.
+
+```{r}
+rendimiento <- na.omit(diff(log(precio)))
+hist(rendimiento, n=100,col="cadetblue", main="(Histograma del rendimiento)", 
+     xlab="Rendimiento", ylab="Frecuencia", prob=TRUE)
+lines(density(rendimiento), col="red", lwd=3)
+xval <- seq(min(rendimiento), max(rendimiento), length.out=100)
+lines(xval, dnorm(xval, mean=mean(rendimiento), sd=sd(rendimiento)), col="blue", lwd=3)
+```
+
+```{r}
+min(rendimiento)
+max(rendimiento)
+mean(rendimiento)
+```
+
+

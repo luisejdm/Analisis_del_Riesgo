@@ -1,0 +1,115 @@
+---
+title: "Proyecto Final: Parte 1"
+author: "Rolando Fortanell Canedo<br>
+Luis Eduardo Jiménez del Muro<br>
+Diego Lozoya Morales<br>
+Lenin Adair Quezada Gómez"
+date: "**2025-02-11**"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    embed-resources: true
+    theme: cerulean
+    highlight: tango
+    code_folding: hide 
+    code-link: true
+---
+
+# Introducción
+
+El análisis del riesgo es una herramienta fundamental para la toma de decisiones en inversiones, ya que permite evaluar la viabilidad y sostenibilidad financiera de una empresa. En este contexto, GCC (Grupo Cementos de Chihuahua) se presenta como una opción atractiva para los inversionistas, gracias a su solidez en el mercado y los factores financieros que la respaldan. Este documento proporciona un estudio detallado sobre aspectos clave como el comportamiento del activo, el Earnings Per Share (EPS), dividendos, splits y los diferentes tipos de riesgo asociados a la empresa, con el objetivo de demostrar su potencial de crecimiento y estabilidad.
+
+El EPS es un indicador crucial que mide la rentabilidad de la empresa en relación con sus accionistas, permitiendo evaluar su capacidad para generar ganancias y reinvertir en su desarrollo. De igual manera, el análisis de dividendos proporciona información sobre la distribución de beneficios, lo que puede representar un atractivo adicional para los inversionistas que buscan ingresos constantes.
+
+Los splits de acciones también juegan un papel importante en la liquidez y accesibilidad de la empresa en el mercado bursátil, facilitando la participación de nuevos inversionistas y promoviendo una mayor estabilidad en la cotización. No obstante, cualquier inversión conlleva riesgos, y en este análisis se identifican y presentan los principales factores de riesgo que podrían influir en la rentabilidad de GCC, desde riesgos de mercado hasta riesgos político.
+
+Este análisis inicial busca proporcionar un marco sólido para la toma de decisiones informadas, destacando los puntos clave que hacen de GCC una alternativa viable y atractiva en el panorama de inversiones. A través de este análisis, se presentarán evidencias que respalden su estabilidad y capacidad de generar valor, ofreciendo a los inversionistas una visión clara y fundamentada sobre las oportunidades que representa esta empresa en el mercado financiero
+
+# Información relevante al activo
+
+Grupo Cementos Chihuahua (GCC), fundada en 1941 por Federico Terrazas Torres, es una empresa dedicada a la producción de cemento, concreto, agregados entre otros. Actualmente GCC cuenta con alrededor de 3,000 empleados y tiene plantas de operación en México y Estados Unidos, aunque su red de distribución se extiende a Canadá y América Latina.
+
+GCC es una gran opción, ya que, es una empresa que no solo ya está establecida en el mercado en México, pero también es una empresa que ha tenido presencia en Estados Unidos expandiendo sus operaciones en dicho país desde 1994.
+
+Aunque no es una compañía del todo “popular” o de consumo masivo, es una empresa que se encuentra muy bien posicionada y es bastante reconocida dentro de la industria de la construcción, sobre todo en los lugares donde actualmente tienen sus plantas de operación. Además, el ser una empresa que se dedica a la producción de cemento la convierte en una empresa confiable y estable a largo plazo debido a la importancia de este material en la construcción.
+
+# Earnings per share (EPS)
+
+|             |         |
+|:-----------:|:-------:|
+| **Quarter** | **EPS** |
+|   Q1-2019   |  5.63   |
+|   Q2-2019   |  5.41   |
+|   Q3-2019   |  5.79   |
+|   Q4-2019   |  6.79   |
+|   Q1-2020   |  7.56   |
+|   Q2-2020   |  8.45   |
+|   Q3-2020   |  9.11   |
+|   Q4-2020   |  8.54   |
+|   Q1-2021   |  8.49   |
+|   Q2-2021   |  9.04   |
+|   Q3-2021   |  9.08   |
+|   Q4-2021   |  9.26   |
+|   Q1-2022   |  9.13   |
+|   Q2-2022   |  9.49   |
+|   Q3-2022   |  10.21  |
+|   Q4-2022   |  8.59   |
+|   Q1-2023   |  9.62   |
+|   Q2-2023   |  10.84  |
+|   Q3-2023   |  12.09  |
+|   Q4-2023   |  15.86  |
+|   Q1-2024   |  16.55  |
+|   Q2-2024   |  16.82  |
+|   Q3-2024   |  17.5   |
+|   Q4-2024   |  18.28  |
+
+Desde el 2019 hasta el año pasado (2024), se puede observar un incremento en el EPS en la mayoría de los trimestres. Por supuesto que esto no se cumple para todos los trimestres, sin embargo, se muestra que en los últimos 5 años el periodo más largo sin incrementos en el EPS es de 6 meses (primer semestre de 2021). El dato más reciente es el cuarto trimestre de 2024, en el cual se espera un EPS de \$18.28 MXN (esto se debe a que aún es un valor preliminar, pues no han sido publicados los estados financieros completos respectivos a este trimestre).
+
+# Dividendos y splits
+
+En la historia de GCC nunca han tenido splits, lo que representa que sus estrategias de crecimiento han funcionado y no han tenido necesidad de bajar el precio de sus acciones para poder llegar a una mayor cantidad de inversionistas. Esto ayuda a que se perciba una menor volatilidad en el precio de su acción, así como también, transmitir una mejor imagen a sus inversionistas.
+
+Por otro lado, GCC suele repartir dividendos a sus inversionistas de una a dos veces en el año. Los dividendos de estos últimos 6 años se distribuyen de la siguiente manera:
+
+|          |                        |
+|:--------:|:----------------------:|
+| **Date** | **Dividend per share** |
+| 15/08/19 |         0.8189         |
+| 07/08/20 |          0.47          |
+| 11/01/21 |          0.47          |
+| 17/08/21 |         1.0105         |
+| 17/05/22 |         1.1621         |
+| 24/05/23 |         1.3364         |
+| 22/05/24 |         1.5369         |
+
+# Riesgos del activo
+
+## Riesgo económico
+
+Uno de los principales riesgos es el riesgo económico, ya que, la demanda de cemento y concreto depende mucho del crecimiento de la construcción. Si la economía entrase en crisis, se construirían menos edificios, carreteras, puentes, etc. Esto podría llevar a GCC a vender menos y tener pérdidas. Además, la llegada de nuevos competidores o el uso de materiales alternativos y tecnología en la construcción podría reducir su participación en el mercado.
+
+## Riesgo financiero y de mercado
+
+Otro riesgo importante es el riesgo financiero y de mercado, ya que, la empresa opera en México y Estados Unidos. Los cambios en el valor del dólar y el peso pueden hacer que comprar materiales o pagar deudas sea más caro. Además, las tasas de interés pueden afectar sus préstamos, haciendo que pagar créditos sea más difícil si los bancos aumentan los intereses. Un ejemplo claro es lo que sucede con las tasas que fija la Reserva Federal en Estados Unidos, las cuales, pueden encarecer el financiamiento para las empresas que operan en ese país.
+
+Los recientes aranceles impuestos por Estados Unidos a productos mexicanos complican aún más la situación. En enero de 2025, el gobierno de EE.UU. impuso un arancel del 25% a productos mexicanos, incluyendo materiales de construcción, lo que podría encarecer la exportación de cemento de GCC a ese país. Si estos aranceles se mantienen o aumentan, la empresa podría perder clientes en Estados Unidos debido al incremento en los costos, afectando sus ventas y rentabilidad.
+
+## Riesgo político y regulatorio
+
+Por último, el riesgo político y regulatorio también puede impactar a GCC. Las leyes ambientales pueden exigirle invertir en tecnologías más limpias, lo que aumentaría sus costos de producción. De igual manera, se podría llegar a ver un riesgo por posibles reformas aplicables al Instituto del Fondo Nacional de la Vivienda para los Trabajadores (INFONAVIT).
+
+Dependiendo del tipo de reforma, podría ser una ventaja o desventaja para GCC. Por ejemplo, si se flexibilizan los créditos o aumentan los montos de financiamiento, podría beneficiar a la empresa al impulsar la demanda de vivienda. Sin embargo, cambios que restrinjan el acceso a financiamiento, aumenten requisitos para constructoras o redirijan recursos a otros programas podrían representar un riesgo. Además, la incertidumbre política y económica en torno a estas reformas puede afectar la planeación y ejecución de proyectos.
+
+# Referencias
+
+-   Bolsa Mexicana de Valores. (s.f.). Perfil de empresa: GCC. Recuperado de <https://www.bmv.com.mx/es/Grupo_BMV/PerfilEmpresa/GCC-5394>
+
+-   FactSet. (2025). Datos financieros y de mercado GCC-MX. Recuperado de <https://www.factset.com>
+
+-   GCC. (s.f.). Acerca de GCC. Recuperado de <https://www.gcc.com/es/acerca-de-gcc/>
+
+-   Téllez, C. (2024, December 9). Cementeras pierden en la BMV en lo que va del año. *El Economista*. <https://www.eleconomista.com.mx/mercados/cementeras-pierden-bmv-ano-20241208-737442.html>
+
+-   Redacción. (2025, February 2). *Trump impone un 25% de aranceles a los productos de México que amenaza con una guerra comercial entre los dos socios*. BBC News Mundo. <https://www.bbc.com/mundo/articles/cgrndnd148yo>

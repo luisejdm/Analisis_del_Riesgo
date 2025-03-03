@@ -1,0 +1,154 @@
+---
+title: "Probabilidades Empíricas"
+author: "Luis Jiménez"
+date: "2025-02-18"
+output: html_document
+---
+
+Vamos a simular el comportamiento del precio de un activo que está determinado por la ecuación:
+
+$$dS = 0.25dr + 0.15SdW$$
+
+Con parámetros anuales y valor inicial de 10, usaremos este comportamiento para determinar probabilidades sobre el precio. Lo primero que necesito es determinar quien es S, que sigue el comportamiento descrito por la acueación ds.
+
+Para determinar S, usamos el lema de ITO y obtenemos:
+
+$$ S_{t+1} = S_t e^{(0.25 - \frac{1}{2} 0.15^2)dt + 0.15 dW}$$
+
+Usaremos la ecuación para generar simulaciones y obtener lo siguiente:
+
+-   Precio esperado para dentro de un año.
+-   Probabilidad de que el precio sea mayor a 10 en un año.
+-   Probabilidad de que el precio supere 12 en un año.
+-   Probabilidad de que el precio se ubique entre 11 y 13.
+-   Intervalo de confianza para el precio en un año al 90%.
+
+```{r}
+set.seed(123)
+So <- 10
+mu <- 0.25
+sigma <- 0.15
+T <- 1
+dt <- T/252
+t <- seq(0, T, length.out=252)
+```
+
+Vamos a simular dW, el proceso de Wiener
+
+```{r}
+W <- c(0, cumsum(sqrt(dt)*rnorm(251)))
+St1 <- So * exp((mu - 0.5*sigma^2)*t + sigma * W)
+plot(St1, type = "l", col="cadetblue")
+```
+
+Vamos a hacer múltiples simulaciones de este comportamiento:
+
+```{r}
+sim <- 1000000
+p_final <- numeric(sim) #Aquí vamos a guardar el precio final, el cual corresponde al precio final de cada simulación.
+
+for (i in 1:sim){
+  W <- c(0, cumsum(sqrt(dt)*rnorm(251)))
+  St1 <- So * exp((mu - 0.5*sigma^2)*t + sigma * W)
+  p_final[i] <- St1[252]
+}
+```
+
+La distribución de probabilidades del precio para dentro de un año con un millón de simulaciones es;
+
+```{r}
+hist(p_final, n=100, col="cadetblue", main="Histograma para el precio en un año")
+```
+
+Precio esperado:
+```{r}
+mean(p_final)
+```
+
+Probabilidad de que el precio sea mayor a 10 en un año
+
+```{r}
+mean(p_final>10)
+```
+Probabilidad de que el precio sea mayor a 12 en un año
+
+```{r}
+mean(p_final>12)
+```
+Probabilidad de que se ubique entre 11 y 13
+
+```{r}
+mean(p_final<13 & p_final>11)
+```
+Intervalo de confianza 10%
+
+```{r}
+quantile(p_final, 0.05)
+quantile(p_final, 0.95)
+```
+
+# Actividad
+
+Bajar el precio de un activo que no cotice en la BMV y vas a usar el último año de información para calcular mu y sigma. Con eso, determinar la probabilidad de que el precio incremente un 30% de su valor actual a un año.
+
+```{r}
+library(quantmod)
+
+datos <- new.env()
+ticker <- "NKE"
+getSymbols(ticker, env=datos, from="2024-02-18", to="2025-02-18")
+precio <- datos[[ticker]][,6]
+rendimiento <- na.omit(diff(log(precio)))
+
+mu <- mean(rendimiento)*252
+sigma <- sd(rendimiento)*sqrt(252)
+So <- as.numeric(tail(precio, n=1))
+
+T <- 1
+dt <- T/252
+t <- seq(0, T, length.out=252)
+
+mu
+sigma
+```
+
+
+```{r}
+W <- c(0, cumsum(sqrt(dt)*rnorm(251)))
+St1 <- So * exp((mu - 0.5*sigma^2)*t + sigma * W)
+
+sim <- 1000000
+p_final <- numeric(sim) #Aquí vamos a guardar el precio final, el cual corresponde al precio final de cada simulación.
+
+for (i in 1:sim){
+  W <- c(0, cumsum(sqrt(dt)*rnorm(251)))
+  St1 <- So * exp((mu - 0.5*sigma^2)*t + sigma * W)
+  p_final[i] <- St1[252]
+}
+
+hist(p_final, n=100, col="cadetblue", main="Histograma para el precio en un año")
+```
+
+Probabilidad de que el precio incremente 30% en un año:
+
+```{r}
+mean(p_final>So*1.3)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

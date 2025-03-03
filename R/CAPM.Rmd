@@ -1,0 +1,150 @@
+---
+title: "CAPM"
+author: "Luis Jiménez"
+date: "2025-02-21"
+output: html_document
+---
+
+Pongan una breve explicación del modelo y como lo transformamos para generar una regresión lineal y qué explica esa regresión.
+
+$$R_j - R_f = \alpha + \beta(R_m - R_j) + \nu$$
+
+Para estimar el modelo necesitamos 3_cosas:
+
+1.  Rendimiento de un activo. (j)
+2.  Rendimiento del mercado.  (m)
+3.  Rendimiento de la tasa libre de riesgo. (f)
+
+Usaremos los últimos 5 años de información.
+
+```{r}
+library(quantmod)
+
+ticker <- "GFNORTEO.MX"
+datos <- new.env()
+getSymbols(ticker, from="2020-01-01", to="2025-01-01", env=datos)
+precio_j <- datos[[ticker]][,6]
+```
+
+El IPC
+
+```{r}
+getSymbols("^MXX", from="2020-01-01", to="2025-01-01", env=datos)
+precio_m <- datos[["MXX"]][,6] 
+```
+Para el modelo se consideran los rendimientos mensuales
+
+```{r}
+precio_j <- to.monthly(precio_j)[,4]
+```
+
+```{r}
+precio_m <- to.monthly(precio_m)[,4]
+```
+
+```{r}
+r_j <- monthlyReturn(precio_j)
+r_m <- monthlyReturn(precio_m)
+names(r_j) <- "Activo"
+names(r_m) <- "Mercado"
+
+plot(merge.xts(r_j, r_m), main="comportamiento del mercado y del activo", legend.loc="bottom")
+```
+
+Cargar la tasa CETE
+
+```{r}
+library(readxl)
+r_f <- read_xlsx("Cetes.xlsx")
+r_f$SF43936 <- (r_f$SF43936/100/12)
+r_f <- as.xts(r_f$SF43936, order.by = r_f$Fecha)
+r_f <- to.monthly(r_f)[,4]
+```
+
+Vamos a construir las variables de excedente de rendimiento del activo y del mercado para hacer la regresión:
+
+
+```{r}
+E_jf <- r_j - r_f
+E_mf <- r_m - r_f
+```
+
+Ahora si hacemos la regresión
+
+```{r}
+CAPM <- lm(E_jf~E_mf)
+summary(CAPM)
+```
+
+Vamos a interpretar los resultados de la regresión
+
++ R2 Representa el porcentaje de riesgo sistemático que hay en el activo.
+
+```{r}
+resultados <- summary(CAPM)
+resultados$r.squared
+```
+En este caso el activo tiene una porcentaje de riesgo sistemático de 53.14%
+
+Se considera que cuando el riesgo sistemático es mayor al 65% entonces hay una señal de alarma.
+
+Porcentaje de riesgo no sistemático:
+
+```{r}
+1-resultados$r.squared
+```
+Los residuales de la regresión representan todo aquello que el modelo no es capaz de explicar. Es decir, todo lo que hace que la variable dependiente cambie (excedente del activo) y que no es explicado por la variable independiente(excedente del mercado).
+
+El riesgo total está dado por:
+
+```{r}
+riesgo_total <- (resultados$sigma^2) / (1-resultados$r.squared) * 100
+riesgo_total
+```
+Para este activo el riesgo total es de 0.8883033%, de su valor, lo que significa por ejemplo, que si hoy el activo vale 143.84, el riesgo es que se pierda el 0.8883033% de ese valor en un mes.
+
+Este RT se divide en dos, riesgo sistemático y no sistemático:
+
+```{r}
+0.8883033*resultados$r.squared
+0.8883033*(1-resultados$r.squared)
+```
+```{r}
+(resultados$sigma^2)
+```
+
+Guardandolo todo en una tabla
+
+```{r}
+library(tibble)
+```
+
+
+```{r}
+alpha <- resultados$coefficients[1]
+beta <- resultados$coefficients[2]
+rs_perc <- resultados$r.squared
+rns_perc <- 1-resultados$r.squared
+rs <- riesgo_total*rs_perc
+rns <- riesgo_total*rns_perc
+
+
+tabla <- tibble(
+  "Alpha" = alpha,
+  "beta" = beta,
+  "%RS" = rs_perc,
+  "%RNS" = rns_perc,
+  "Riesgo Sistemático" = rs,
+  "Riesgo no Sistemático" = rns
+)
+tabla
+```
+
+```{r}
+coef(resultados)[2]
+```
+
+
+
+
+
