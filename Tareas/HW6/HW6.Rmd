@@ -1,0 +1,92 @@
+---
+title: "HW6 - Estimación de probabilidades"
+author: "Luis Eduardo Jiménez del Muro"
+date: "2025-03-04"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    embed-resources: true
+    theme: cerulean
+    highlight: tango
+    code_folding: hide 
+    code-link: true
+---
+
+# Ejercicio 1
+
+La probabilidad de que el cambio en el precio de BIMBO sea negativo en los próximos 5 días. Para determinar los parámetros usa los datos del 01-feb-24 al 01-Feb-25. Estima la probabilidad empírica de dos maneras:
+
+## Cálculo empírico
+
+### Primero simula la ecuación St como lo hicimos en clase y calcula la probabilidad.
+
+```{r}
+library(quantmod)
+
+# Cargar datos
+datos <- new.env()
+ticker <- "BIMBOA.MX"
+getSymbols(ticker, env=datos, from="2024-02-01", to="2025-02-01")
+precio <- datos[[ticker]][,6]
+
+# Cálculo de log-rendimientos
+rendimiento <- na.omit(diff(log(precio)))
+
+# Parámetros estimados
+mu <- mean(rendimiento) * 252
+sigma <- sd(rendimiento) * sqrt(252)
+So <- as.numeric(tail(precio, n=1))
+
+print(paste("Mu =", mu))
+print(paste("Sigma =", sigma))
+
+# Simulación
+T <- 5    # Horizonte de 5 días
+dt <- 5/252   # Cada paso es un día
+sim <- 100000
+p_final <- numeric(sim)
+
+# Monte Carlo
+for (i in 1:sim){
+  W <- cumsum(sqrt(dt) * rnorm(T))  # Movimiento browniano en T días
+  St1 <- So * exp((mu - 0.5 * sigma^2) * (1:T) + sigma * W)
+  p_final[i] <- St1[T]  # Guardar el precio final después de 5 días
+}
+
+# Cálculo de la probabilidad empírica
+probabilidad <- mean(p_final < So)
+
+print(paste("Probabilidad de caída en 5 días =", probabilidad))
+
+```
+
+### Segundo simula la ecuación ds en lugar de S y compara los resultados. Para simular ds, solo debes generar la cantidad de aleatorios necesarios para la simulación.
+
+```{r}
+dW <- sqrt(dt) * rnorm(251)
+dS <- mu * So * dt + sigma * So * dW
+
+sim <- 100000
+p_final <- numeric(sim) #Aquí vamos a guardar el precio final, el cual corresponde al precio final de cada simulación.
+
+for (i in 1:sim){
+  W <- c(0, cumsum(sqrt(dt)*rnorm(251)))
+  St1 <- So * exp((mu - 0.5*sigma^2)*t + sigma * W)
+  p_final[i] <- St1[252]
+}
+
+probabilidad <- mean(p_final < So)
+
+print(paste("Probabilidad de cambio negativo en el precio en 5 días =", probabilidad))
+```
+
+## Cálculo teórico
+
+### Utilizando $\ln{S_T}$
+
+![](fotos/logaritmo.jpg){width="665"}
+
+### Utilizando $ds$
+
+![](fotos/ds.jpg){width="665"}
