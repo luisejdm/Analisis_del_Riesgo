@@ -1,0 +1,96 @@
+---
+title: "Media Movil"
+author: "Luis Jiménez"
+date: "2025-03-04"
+output: html_document
+---
+
+Estimación de un modelo de promedio móvil para estimar la varianza.
+
+Aquí vboy a poner las características del promedio móvil
+
+$$\sigma_{t,m}=\sum_{i=1}^{m}R_{t-i}^2$$
+
+```{r}
+ticker <- "GFNORTEO.MX"
+datos <- new.env()
+getSymbols(ticker, env = datos)
+precio <- datos[[ticker]][,6]
+rend <- na.omit(diff(log(precio)))
+plot(rend)
+```
+
+
+```{r}
+rend_2 <- rend^2
+plot(rend_2)
+```
+
+El rendimiento al cuadrado constituye la estimación mas sencilla de la varianza.
+
+
+```{r}
+library(TTR)
+var_5 <- SMA(rend_2, n=5+1)
+var_10 <- SMA(rend_2, n=10+1)
+var_20 <- SMA(rend_2, n=20+1)
+var_40 <- SMA(rend_2, n=40+1)
+```
+
+
+Antes de decidir quien es M, vamos a graficar las estimaciones de varianza de cada modelo (en realidad tenemos 4 modelos, todos promedios móviles, pero con diferentes valores de m).
+
+```{r}
+layout(matrix(c(1,2)))
+plot(var_5)
+plot(rend_2)
+```
+```{r}
+layout(matrix(c(1,2)))
+plot(var_40)
+plot(rend_2)
+```
+
+Para seleccionar el mejor valor de m, que produzca el menor error, usaremos tres indicadores:
+
++ **RMSE** Error cuadrático medio $\text{RMSE} = \frac{1}{H}  \sqrt{\sum_{i=1}^{n} (R_i^2-\sigma_i^2)^2}$
+
+```{r}
+library(tibble)
+
+RMSE <- tibble(
+  "M=5"=sqrt(mean(na.omit(rend_2-var_5)^2)),
+  "M=10"=sqrt(mean(na.omit(rend_2-var_10)^2)),
+  "M=20"=sqrt(mean(na.omit(rend_2-var_20)^2)),
+  "M=40"=sqrt(mean(na.omit(rend_2-var_40)^2))
+)
+RMSE
+```
+Recomienda utilizar M=5
+
++ **EAMP** Error Absoluto Medio Proporcional $\text{EAMP} = \frac{1}{H} |R_i^2-\sigma^2_i|$
+
+```{r}
+EAMP <- tibble(
+  "M=5"=mean(abs(na.omit(rend_2-var_5))),
+  "M=10"=mean(abs(na.omit(rend_2-var_10))),
+  "M=20"=mean(abs(na.omit(rend_2-var_20))),
+  "M=40"=mean(abs(na.omit(rend_2-var_40)))
+)
+EAMP
+```
+Recomienda Utilizar M=5
+
++ **ECPP** Error cuadrático Promedio Proporcional $\text{ECPP} = \frac{1}{H} (\frac{ R_i^2-\sigma_1^2 }{\sigma_i^2})^2$
+
+```{r}
+ECPP <- tibble(
+  "M=5"=mean((na.omit(rend_2-var_5)/var_5)^2),
+  "M=10"=mean((na.omit(rend_2-var_10)/var_10)^2),
+  "M=20"=mean((na.omit(rend_2-var_20)/var_20)^2),
+  "M=40"=mean((na.omit(rend_2-var_40)/var_40)^2)
+)
+ECPP
+```
+Recomienda utilizar M=5
+

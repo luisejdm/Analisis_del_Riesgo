@@ -77,12 +77,11 @@ print(paste("Probabilidad de caída en 5 días (dS) =", probabilidad_ds))
 
 ### Utilizando $\ln{S_T}$
 
-![](fotos/logaritmo.jpg){width="665"}
+![](fotos/logaritmo.jpg){width="635"}
 
 ### Utilizando $ds$
 
-![](fotos/ds.jpg){width="665"}
-
+![](fotos/ds.jpg){width="635"}
 
 # Ejercicio 2
 
@@ -130,27 +129,8 @@ print(paste("Probabilidad de caída en un año (dS) =", probabilidad_ds))
 
 ### Utilizando $\ln{S_T}$
 
-
+![](fotos/logaritmo2.jpg){width="635"}
 
 ### Utilizando $ds$
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](fotos/ds2.jpg){width="635"}
